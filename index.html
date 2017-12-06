@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<body>
+
+  <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="/socket.io-client/dist/socket.io.js"></script>
+  <!-- load the d3.js library -->
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script>
+    var socket = io.connect('http://localhost:4200');
+    socket.on('connect', function(data) {
+      socket.emit('join', 'Hello World from client');
+    });
+
+    Highcharts.setOptions({
+      global: {
+        useUTC: false
+      }
+    });
+
+    Highcharts.chart('container', {
+      chart: {
+        type: 'spline',
+        animation: Highcharts.svg, // don't animate in old IE
+        marginRight: 10,
+        events: {
+          load: function() {
+
+            // set up the updating of the chart each second
+            var series = this.series[0];
+            socket.on('room', function(items) {
+              for(let data in items){
+                ((data) => {
+                  var x = data.ts, // current time
+                    y = data.cpu_p;
+                  series.addPoint([x, y], true, true);
+                })(data);
+              }
+            });
+            // setInterval(function() {
+            //
+            // }, 1000);
+          }
+        }
+      },
+      title: {
+        text: 'Live random data'
+      },
+      xAxis: {
+        type: 'datetime',
+        tickPixelInterval: 150
+      },
+      yAxis: {
+        title: {
+          text: 'Value'
+        },
+        plotLines: [{
+          value: 0,
+          width: 1,
+          color: '#808080'
+        }]
+      },
+      tooltip: {
+        formatter: function() {
+          return '<b>' + this.series.name + '</b><br/>' +
+            Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+            Highcharts.numberFormat(this.y, 2);
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      exporting: {
+        enabled: false
+      },
+      series: [{
+        name: 'CPU Usage (%)',
+        data: (function() {
+          // generate an array of random data
+          var data = [],
+            time = (new Date()).getTime(),
+            i;
+
+          for (i = -19; i <= 0; i += 1) {
+            data.push({
+              x: time + i * 1000,
+              y: Math.random()
+            });
+          }
+          return data;
+        }())
+      }]
+    });
+  </script>
+</body>

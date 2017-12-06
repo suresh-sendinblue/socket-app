@@ -1,0 +1,26 @@
+{
+  "name": "socket-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "~0.4.2",
+    "async": "^2.6.0",
+    "bignum": "^0.12.5",
+    "colors": "~1.1.2",
+    "crypto": "0.0.3",
+    "dockerode": "^2.5.3",
+    "express": "^4.16.2",
+    "jquery": "^3.2.1",
+    "mimelib": "~0.3.0",
+    "mongodb": "^2.2.33",
+    "mongojs": "^2.4.1",
+    "querystring": "^0.2.0",
+    "socket.io": "^2.0.4"
+  }
+}
